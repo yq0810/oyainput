@@ -1,3 +1,8 @@
+# oyainput-fcitx5-fix
+This is a fork of [oyainput](https://github.com/inwskatsube/oyainput), modified to support Fcitx5.  
+This project is not intended to replace the original but serves as a workaround for Fcitx5 environments until official support is available.  
+I have tested this on Fedora 42.
+
 # oyainput
 software to emulate Japanese thum shift keyboard (oyayubi-shift keyboard)
 

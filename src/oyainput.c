@@ -23,7 +23,7 @@ static int do_terminate = 0;
 static char devpath[BUFSIZE+1] = {};
 static int fdo = 0;
 static int paused = 0;
-static int imtype = 0; // (0: none, 1:fcitx, 2:ibus, 3:uim)
+static int imtype = 0; // (0: none, 1:fcitx5, 2:ibus, 3:uim)
 static __u16 on_keycode = 0;
 static __u16 off_keycode = 0;
 static char keyboardname[BUFSIZE+1] = {};
@@ -45,7 +45,7 @@ int get_imtype() {
 }
 
 void set_imtype(char* imname) {
-	if(strcasecmp(imname, "fcitx")==0){
+	if(strcasecmp(imname, "fcitx5")==0){
 		imtype = 1;
 	} else if(strcasecmp(imname, "ibus")==0){
 		imtype = 2;
@@ -73,9 +73,12 @@ void set_imtype_default() {
 	}
 	if (strncasecmp(GTK_IM_MODULE, "fcitx", BUFSIZE) == 0 ||
 		strncasecmp(QT_IM_MODULE, "fcitx", BUFSIZE) == 0 ||
-		strncasecmp(XMODIFIERS, "@im=fcitx", BUFSIZE) == 0
+		strncasecmp(XMODIFIERS, "@im=fcitx", BUFSIZE) == 0 ||
+		strncasecmp(GTK_IM_MODULE, "fcitx5", BUFSIZE) == 0 ||
+		strncasecmp(QT_IM_MODULE, "fcitx5", BUFSIZE) == 0 ||
+		strncasecmp(XMODIFIERS, "@im=fcitx5", BUFSIZE) == 0
 	) {
-		printf("IM auto-detect: fcitx\n");
+		printf("IM auto-detect: fcitx5\n");
 		imtype = 1;
 	} else if(strncasecmp(GTK_IM_MODULE, "ibus",BUFSIZE) == 0 ||
 		strncasecmp(QT_IM_MODULE, "ibus",BUFSIZE) == 0 ||
@@ -266,8 +269,8 @@ int main(int argc, char *argv[]) {
 	strncat(devpath, devs[usedevno].devno, 2);
 
 	if (get_imtype() == 1 &&
-		0 != system("type fcitx-remote > /dev/null")) {
-		die("error: fcitx is not installed!");
+		0 != system("type fcitx5-remote > /dev/null")) {
+		die("error: fcitx5 is not installed!");
 	} else if (get_imtype() == 2 &&
 		0 != system("type ibus > /dev/null")) {
 		die("error: ibus is not installed!");

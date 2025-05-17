@@ -411,7 +411,7 @@ Boolean save_config(char *path)
 	fprintf(fp, "# 右親指キー　(変換キー＝HENKAN,ひらがなカタカナキー＝KATAKANAHIRAGANA)\n");
 	fprintf(fp, "ROYAKEY=HENKAN\n");
 	fprintf(fp, "\n");
-	fprintf(fp, "# ON状態とOFF状態を連携させるIM(fcitx/ibus/auto/none)を指定。\n");
+	fprintf(fp, "# ON状態とOFF状態を連携させるIM(fcitx5/ibus/auto/none)を指定。\n");
 	fprintf(fp, "#IM=auto\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "# 日本語 ON/OFFキー\n");
