@@ -16,6 +16,7 @@
 
 #define MSG_PAUSED  "\royainput:    paused."
 #define MSG_RESTART "\royainput: restarted."
+#define PAUSE_FILE  "/tmp/oyainput-paused"
 
 
 
@@ -27,6 +28,15 @@ static int imtype = 0; // (0: none, 1:fcitx5, 2:ibus, 3:uim)
 static __u16 on_keycode = 0;
 static __u16 off_keycode = 0;
 static char keyboardname[BUFSIZE+1] = {};
+
+void create_pause_file() {
+	int fd = open(PAUSE_FILE, O_CREAT | O_WRONLY, 0644);
+	if (fd >= 0) close(fd);
+}
+
+void remove_pause_file() {
+	unlink(PAUSE_FILE);
+}
 
 int get_kbdevie_output() {
 	return fdo;
@@ -116,12 +126,14 @@ void on_sigstop(int signal) {
 	UNUSED_VARIABLE(signal);
 	printf(MSG_PAUSED);
 	paused = 1;
+	create_pause_file();
 }
 
 void on_sigrestart(int signal) {
 	UNUSED_VARIABLE(signal);
 	printf(MSG_RESTART);
 	paused = 0;
+	remove_pause_file();
 }
 
 void on_sigtoggle(int signal) {
@@ -129,9 +141,11 @@ void on_sigtoggle(int signal) {
 	if (paused) {
 		printf(MSG_RESTART);
 		paused = 0;
+		remove_pause_file();
 	} else {
 		printf(MSG_PAUSED);
 		paused = 1;
+		create_pause_file();
 	}
 }
 
@@ -200,6 +214,7 @@ int main(int argc, char *argv[]) {
 
 	// initialize oyayubi state by default values.
 	oyayubi_state_init();
+	remove_pause_file();
 
 
 	char user_name[BUFSIZE+1] = {};
@@ -388,9 +403,11 @@ int main(int argc, char *argv[]) {
 				if (paused) {
 					printf(MSG_RESTART);
 					paused = 0;
+					remove_pause_file();
 				} else {
 					printf(MSG_PAUSED);
 					paused = 1;
+					create_pause_file();
 				}
 			}
 			write(fdo, &ie, sizeof(ie));
@@ -406,12 +423,14 @@ int main(int argc, char *argv[]) {
 				if (paused && on_keycode != 0 && ie.code == on_keycode) {
 					printf(MSG_RESTART);
 					paused = 0;
+					remove_pause_file();
 					write(fdo, &ie, sizeof(ie));
 					break;
 				}
 				if (! paused && off_keycode != 0 && ie.code == off_keycode) {
 					printf(MSG_PAUSED);
 					paused = 1;
+					create_pause_file();
 					write(fdo, &ie, sizeof(ie));
 					break;
 				}
