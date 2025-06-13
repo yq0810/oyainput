@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=oyainput-fix
+Exec=oyainput
+X-GNOME-Autostart-enabled=true
+Comment=Software to enable thumb shift input (fcitx5 compatible version)
+Comment[ja]=親指シフト入力を可能にするためのソフトウェア(fcitx5対応版)
+Icon=com.github.shimamu.oyainput-fcitx5-fix
+Terminal=false
+NoDisplay=false
+Keywords=input;fcitx;fcitx5;ime;japanese;keyboard;oya;thumb-shift;
+Keywords[ja]=日本語入力;キーボード;入力;親指シフト;親指;オアシス;OASYS;oyainput;おやいんぷっと;おあしす;
