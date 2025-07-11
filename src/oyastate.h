@@ -19,3 +19,12 @@ int is_state_first();
 void update_event_timer();
 void on_otherkey_down(__u16 kc);
 void handle_oyayubi_event(struct OyayubiEvent ev);
+
+// 複数キー対応のための新しい関数宣言
+void add_left_oyakey(__u16 kc);
+void add_right_oyakey(__u16 kc);
+void clear_left_oyakeys();
+void clear_right_oyakeys();
+Boolean is_left_oyakey(__u16 kc);
+Boolean is_right_oyakey(__u16 kc);
+Boolean is_oyakey(__u16 kc);

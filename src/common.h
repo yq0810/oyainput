@@ -137,7 +137,8 @@
 #define MOJI_HANDAKUTEN 117
 #define MOJI_LKAKKO 118
 #define MOJI_RKAKKO 119
-#define MOJI_MAX 119 // last index
+#define MOJI_COLON 120
+#define MOJI_MAX 121 // last index
 
 // Oyayubi State
 #define STATE_FIRST 1

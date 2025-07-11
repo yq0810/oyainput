@@ -289,6 +289,7 @@ MOJINAMECODE mojiNameCodeTable[] = {
 	{"HANDAKUTEN",117},
 	{"LKAKKO",118},
 	{"RKAKKO",119},
+	{"COLON",120},
 };
 
 
@@ -332,7 +333,7 @@ Boolean load_config(char* path)
 		} else if (strcasecmp(key, "LOYAKEY")==0) {
 			kc = keyname_to_code(value);
 			if (kc != 0) {
-				printf("LOYAKEY: %s\n", value);
+				printf("SET LOYAKEY: %s\n", value);
 				set_left_oyakey(kc);
 			}
 		} else if (strcasecmp(key, "ROYAKEY")==0) {
@@ -402,7 +403,7 @@ Boolean save_config(char *path)
 	if ((fp = fopen(path, "w")) == NULL) {
 		return FALSE;
 	}
-	fprintf(fp, "# キーボード名\n");
+	fprintf(fp, "#キーボード名\n");
 	fprintf(fp, "#KEYBOARDNAME=XXXX\n");
 	fprintf(fp, "\n");
 	fprintf(fp, "# 左親指キー　(スペースキー＝SPACE, 無変換キー＝MUHENKAN)\n");

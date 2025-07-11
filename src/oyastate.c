@@ -44,7 +44,7 @@ KEYMAP_INFO oyakanaTableRomajiDefault[] = {
 	{KEY_9, MOJI_9},
 	{KEY_0, MOJI_0},
 	{KEY_MINUS, MOJI_MINUS},
-	{KEY_EQUAL, MOJI_HANDAKUTEN},
+	{KEY_EQUAL, MOJI_COLON},
 
 	// 右手上段 らちくつ、、
 	{KEY_Y, MOJI_RA},
@@ -287,6 +287,7 @@ ROMAJI_INFO romaKeys[] = {
 	[MOJI_TILDE] = {KEY_Z,KEY_MINUS,0}, /* MOJI_TILDE 93 */
 	[MOJI_LKAGI] = {KEY_Z,KEY_RIGHTBRACE,0}, /* MOJI_LKAGI 94 */
 	[MOJI_RKAGI] = {KEY_Z,KEY_BACKSLASH,0}, /* MOJI_RKAGI 95 */
+	[MOJI_COLON] = {KEY_APOSTROPHE,0 , 0}, /* MOJI_QUOTE 95 */
 	[MOJI_LBRACKET] = {KEY_LEFTSHIFT, KEY_RIGHTBRACE,0}, /* MOJI_LBRACKET 96 */
 	[MOJI_RBRACKET] = {KEY_LEFTSHIFT,KEY_BACKSLASH,0}, /* MOJI_RBRACKET 97 */
 	[MOJI_LPAREN] = {KEY_LEFTSHIFT,KEY_8,0}, /* MOJI_LPAREN 98 */
@@ -337,22 +338,28 @@ long e_charTime = 200; //	文字->親指同時打鍵検出許容期間（簡易�
 long e_oyaTime = 200; //	親指->文字同時打鍵検出許容期間（簡易ロジックでは無効）
 long e_nicolaTime = 50; //	親指単独打鍵みなし期間
 
-// 親指シフトキーとみなすキーコード
-__u16 e_loya_keycode = KEY_SPACE; // KEY_MUHENKAN
-__u16 e_roya_keycode = KEY_HENKAN;
+// 親指シフトキーとみなすキーコード（複数キー対応）
+#define MAX_OYA_KEYS 2
+__u16 e_loya_keycodes[MAX_OYA_KEYS] = {KEY_SPACE, KEY_HENKAN}; // KEY_MUHENKAN
+__u16 e_roya_keycodes[MAX_OYA_KEYS] = {KEY_KATAKANAHIRAGANA,0};
+int e_loya_keycount = 2;
+int e_roya_keycount = 1;
 
 static OYAYUBI_EVENT timer_ev;
 static OYAYUBI_EVENT otherkey_ev;
 
 void set_left_oyakey(__u16 kc) {
 	if (kc != 0) {
-		e_loya_keycode = kc;
+		e_loya_keycodes[0] = kc;
+		e_loya_keycount = 1;
+		printf("go\n");
 	}
 }
 
 void set_right_oyakey(__u16 kc) {
 	if (kc != 0) {
-		e_roya_keycode = kc;
+		e_roya_keycodes[0] = kc;
+		e_roya_keycount = 1;
 	}
 }
 
@@ -395,7 +402,7 @@ void oyayubi_state_init() {
 }
 
 Boolean is_moji_key(__u16 code) {
-	if (code == e_loya_keycode || code == e_roya_keycode) {
+	if (is_oyakey(code)) {
 		return FALSE;
 	}
 	for(int i = 0; i < mojiKeyTableSize; i++) {
@@ -564,7 +571,7 @@ Boolean is_moji_up(OYAYUBI_EVENT ev) {
 }
 
 Boolean is_oya_down(OYAYUBI_EVENT ev) {
-	if(ev.keyCode != e_loya_keycode && ev.keyCode != e_roya_keycode) {
+	if(!is_oyakey(ev.keyCode)) {
 		return FALSE;
 	}
 	if (ev.eventType == ET_KEYDOWN && ! ev.isRepeat) {
@@ -574,7 +581,7 @@ Boolean is_oya_down(OYAYUBI_EVENT ev) {
 }
 
 Boolean is_oya_repeat(OYAYUBI_EVENT ev) {
-	if(ev.keyCode != e_loya_keycode && ev.keyCode != e_roya_keycode) {
+	if(!is_oyakey(ev.keyCode)) {
 		return FALSE;
 	}
 	if (ev.eventType == ET_KEYDOWN && ev.isRepeat) {
@@ -584,7 +591,7 @@ Boolean is_oya_repeat(OYAYUBI_EVENT ev) {
 }
 
 Boolean is_oya_up(OYAYUBI_EVENT ev) {
-	if(ev.keyCode != e_loya_keycode && ev.keyCode != e_roya_keycode) {
+	if(!is_oyakey(ev.keyCode)) {
 		return FALSE;
 	}
 	if (ev.eventType == ET_KEYUP) {
@@ -597,7 +604,7 @@ Boolean is_otherkey_down(OYAYUBI_EVENT ev) {
 	if(is_moji_key(ev.keyCode)) {
 		return FALSE;
 	}
-	if (ev.keyCode == e_loya_keycode || ev.keyCode == e_roya_keycode) {
+	if (is_oyakey(ev.keyCode)) {
 		return FALSE;
 	}
 	return TRUE;
@@ -637,7 +644,7 @@ void output_oya(__u16 o) {
 }
 
 void output_oya_moji(__u16 okey, __u16 mkey) {
-	if (okey == e_loya_keycode) {
+	if (is_left_oyakey(okey)) {
 		// 左シフト
 		int len = oyakanaLTableRomajiSize;
 		for(int i = 0; i < len; i++) {
@@ -649,7 +656,7 @@ void output_oya_moji(__u16 okey, __u16 mkey) {
 			}
 		}
 	}
-	else if (okey == e_roya_keycode) {
+	else if (is_right_oyakey(okey)) {
 		// 右シフト
 		int len = oyakanaRTableRomajiSize;
 		for(int i = 0; i < len; i++) {
@@ -667,7 +674,7 @@ Boolean is_acceptable(int keycode) {
 	if(is_moji_key(keycode) ) {
 		return TRUE;
 	}
-	if (keycode == e_loya_keycode || keycode == e_roya_keycode ) {
+	if (is_oyakey(keycode)) {
 		return TRUE;
 	}
 	return FALSE;
@@ -950,4 +957,70 @@ void handle_oyayubi_event(OYAYUBI_EVENT ev) {
 		_state = STATE_FIRST;
 		break;
 	}
+}
+
+// 複数キー対応のための新しい関数
+void add_left_oyakey(__u16 kc) {
+	if (kc != 0 && e_loya_keycount < MAX_OYA_KEYS) {
+		// 既に存在するかチェック
+		for (int i = 0; i < e_loya_keycount; i++) {
+			if (e_loya_keycodes[i] == kc) {
+				return; // 既に存在する場合は追加しない
+			}
+		}
+		e_loya_keycodes[e_loya_keycount] = kc;
+		e_loya_keycount++;
+	}
+}
+
+void add_right_oyakey(__u16 kc) {
+	if (kc != 0 && e_roya_keycount < MAX_OYA_KEYS) {
+		// 既に存在するかチェック
+		for (int i = 0; i < e_roya_keycount; i++) {
+			if (e_roya_keycodes[i] == kc) {
+				return; // 既に存在する場合は追加しない
+			}
+		}
+		e_roya_keycodes[e_roya_keycount] = kc;
+		e_roya_keycount++;
+	}
+}
+
+void clear_left_oyakeys() {
+	e_loya_keycount = 0;
+	for (int i = 0; i < MAX_OYA_KEYS; i++) {
+		e_loya_keycodes[i] = 0;
+	}
+}
+
+void clear_right_oyakeys() {
+	e_roya_keycount = 0;
+	for (int i = 0; i < MAX_OYA_KEYS; i++) {
+		e_roya_keycodes[i] = 0;
+	}
+}
+
+// 左親指キーかどうかを判定する関数
+Boolean is_left_oyakey(__u16 kc) {
+	for (int i = 0; i < e_loya_keycount; i++) {
+		if (e_loya_keycodes[i] == kc) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+// 右親指キーかどうかを判定する関数
+Boolean is_right_oyakey(__u16 kc) {
+	for (int i = 0; i < e_roya_keycount; i++) {
+		if (e_roya_keycodes[i] == kc) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+// 親指キーかどうかを判定する関数
+Boolean is_oyakey(__u16 kc) {
+	return is_left_oyakey(kc) || is_right_oyakey(kc);
 }
