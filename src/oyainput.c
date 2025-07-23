@@ -263,7 +263,8 @@ int main(int argc, char *argv[]) {
 				}
 			}
 			if (usedevno < 0) {
-				printf("keyboardname '%s' not found\n\n", get_keyboardname());
+			   printf("keyboardname '%s' not found\n\n", get_keyboardname());
+			   exit(EXIT_FAILURE);
 			}
 		}
 		if (usedevno < 0) {

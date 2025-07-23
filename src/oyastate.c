@@ -340,8 +340,8 @@ long e_nicolaTime = 50; //	親指単独打鍵みなし期間
 
 // 親指シフトキーとみなすキーコード（複数キー対応）
 #define MAX_OYA_KEYS 2
-__u16 e_loya_keycodes[MAX_OYA_KEYS] = {KEY_SPACE, KEY_HENKAN}; // KEY_MUHENKAN
-__u16 e_roya_keycodes[MAX_OYA_KEYS] = {KEY_KATAKANAHIRAGANA,0};
+__u16 e_loya_keycodes[MAX_OYA_KEYS] = {KEY_SPACE, 0}; // KEY_MUHENKAN
+__u16 e_roya_keycodes[MAX_OYA_KEYS] = {KEY_HENKAN,0};
 int e_loya_keycount = 2;
 int e_roya_keycount = 1;
 
