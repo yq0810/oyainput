@@ -66,6 +66,8 @@ void set_imtype(char* imname) {
 	} else {
 		imtype = 0;
 	}
+	printf("set_imtype imtype: %d\n", imtype);
+
 }
 
 void set_imtype_default() {
@@ -101,6 +103,8 @@ void set_imtype_default() {
 		printf("IM auto-detect: uim\n");
 		imtype = 3;
 	}
+	printf("set_imtype_default IM auto-detect: %d\n", imtype);
+	
 }
 
 void set_onkey(__u16 kc) {
@@ -466,9 +470,11 @@ int main(int argc, char *argv[]) {
 			if (ie.value == 1 && is_state_first()) {
 				// check on key down only
 				ime_on = is_imeon(pw->pw_dir);
+				printf("check on key down only ime_on: %d\n", ime_on);
 			}
 
 			if (! ime_on) {
+				printf("IME is off, keycode=%d\n", ie.code);
 				write(fdo, &ie, sizeof(ie));
 				break;
 			}
@@ -483,6 +489,7 @@ int main(int argc, char *argv[]) {
 				oe.isRepeat = 1;
 			}
 			oe.keyCode = ie.code;
+			printf("oyainput: keycode=%d, value=%d\n", oe.keyCode, ie.value);
 			handle_oyayubi_event(oe);
 			break;
 		}

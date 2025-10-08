@@ -119,13 +119,15 @@ Boolean is_fcitx_on(char *home_dir) {
 	if (pipe == NULL) {
 		seteuid(euid);
 		return FALSE;
-	}
+	} 
 	memset(cmd_buffer, 0, BUFSIZE);
 	fgets(cmd_buffer, BUFSIZE, pipe);
 	pclose(pipe);
 	seteuid(euid);
 
 	int n = atoi(cmd_buffer);
+	// print 
+	printf("fcitx5-remote output: %d\n", n);
 	switch(n){
 		case 0 : return FALSE; break;
 		case 1 : return FALSE; break;
@@ -161,6 +163,9 @@ Boolean is_ibus_on() {
 
 Boolean is_imeon(char *home_dir){
 	int imtype = get_imtype();
+	// and print home_dir
+	printf("is_imeon home_dir: %s\n", home_dir);
+	printf("is_imeon Input method type: %d\n", imtype);
 	if (imtype == 1) {
 		return is_fcitx_on(home_dir);
 	}else if (imtype == 2) {

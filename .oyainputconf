@@ -1,5 +1,5 @@
 # キーボード名
-KEYBOARDNAME=REALFORCE_1 Keyboard
+#KEYBOARDNAME=Topre REALFORCE HYBRID JP TKL keyboard
 # 左親指キー　(スペースキー＝SPACE, 無変換キー＝MUHENKAN)
 #LOYAKEY=SPACE
 
@@ -7,8 +7,7 @@ KEYBOARDNAME=REALFORCE_1 Keyboard
 ROYAKEY=HENKAN
 
 # ON状態とOFF状態を連携させるIM(fcitx/ibus/auto/none)を指定。
-IM=auto
-
+IM=fcitx
 # 日本語 ON/OFFキー
 #ONKEY=RIGHTALT
 #OFFKEY=RIGHTALT

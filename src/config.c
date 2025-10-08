@@ -317,8 +317,7 @@ Boolean load_config(char* path)
 		if(strcmp(line,"\n")==0) continue;
 		if(strncmp(line,"#",1)==0) continue;
 
-		sscanf(line, "%[^=]=%s", key, value);
-		//printf("key = %s, value = %s \n", key, value);
+		sscanf(line, "%[^= ]%*[ =]%[^\n]", key, value);
 		/*if (strcasecmp(key,"DEVFILENO")==0) {
 			if (strlen(value) > 0 ) {
 				char devpath[120] = INPUT_EVENT_PATH;
